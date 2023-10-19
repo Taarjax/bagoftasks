@@ -5,27 +5,27 @@ import java.rmi.*;
 
 import java.rmi.server.*;
 import java.util.*;
-
 import java.sql.*;
 import javax.sql.rowset.*;
 
-
 public class ImplCallback extends UnicastRemoteObject implements Callback {
-// C'est au worker d'appeller d'appeller cette fonction 
-
-  private CachedRowSet crs;
 
   public ImplCallback() throws RemoteException {
-    try {
-        this.crs = RowSetProvider.newFactory().createCachedRowSet();
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
+    super();
   }
 
-  public void sendResult(ArrayList<Object> result) throws RemoteException {
-    System.out.println("Resultat recu");
-    System.out.println(result);
+  public void sendResult(CachedRowSet crs) throws RemoteException {
+    System.out.println("Résultat de la requête : ");
+    try {
+      while (crs.next()) {
+        int id = crs.getInt("id");
+        String solde = crs.getString("solde");
+        System.out.println("id : " + id + ", solde : " + solde);
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    
   }
 
 }

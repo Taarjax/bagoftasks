@@ -5,6 +5,8 @@ import bagoftasks.proto.*;
 
 /**
  * Worker class
+ * 
+ * C'est le worker qui fait la tache pas le serveur, ducoup ca permet de pas surchagé le serveur comparé au pattern object factory
  */
 public class Worker{
     public static void main(String[] args) {
@@ -16,8 +18,8 @@ public class Worker{
 
             // If there is a task, run it and remove it from the list of tasks to do
             if (task != null) {
-                task.run();
-                bot.addResult(task);
+                boolean success = task.run();
+                bot.addResult(task, success);
             } else {
                 System.out.println("La liste des tâches est vide");
             }
