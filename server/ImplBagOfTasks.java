@@ -69,8 +69,8 @@ public class ImplBagOfTasks extends UnicastRemoteObject implements BagOfTasks {
      * Function to add a task in the list of tasks, this function is called by the client when 
      * he want to submit a task to the server
      */
-    public Task submitTask(Task task, int index) throws RemoteException {
-        System.out.println("Tache reçu par le serveur : " + index);
+    public Task submitTask(Task task) throws RemoteException {
+        System.out.println("Tache reçu par le serveur : ");
 
         listTask.add(task);
         return (Task) task;

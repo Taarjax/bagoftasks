@@ -19,14 +19,14 @@ public class ClientApplicatif {
             //  Pour justifier l'asynchronisme du callback, on va lancer 10000 requetes en meme temps
             // On va voir que si on lance un worker durant la reception des requetes par le serveur, 
             // le worker va traiter la requete et envoyé le callback au client alors que le serveur n'a pas encore fini de recevoir les requetes
-            for(int i = 1; i <= 10000; i++){
-               bot.submitTask(task, i);
-            }
+            
+            // C'est aussi asynchrone, parceque l'envoie des taches est non bloquant, le client peut envoyer des taches sans attendre que le serveur ait fini de recevoir les taches
+            bot.submitTask(task);
+            
 
         } catch(Exception e) {
             e.printStackTrace();
         }
     }
 
-    
 }

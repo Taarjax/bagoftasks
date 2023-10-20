@@ -2,30 +2,43 @@ package bagoftasks.client;
 
 import java.rmi.*;
 import bagoftasks.proto.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Worker class
  * 
  * C'est le worker qui fait la tache pas le serveur, ducoup ca permet de pas surchagé le serveur comparé au pattern object factory
  */
-public class Worker{
+public class Worker {
     public static void main(String[] args) {
         try {
-            // Get the reference of the BagOfTasks object load in the RMI registry (To comunicate with the application client and the server)
-            BagOfTasks bot = (BagOfTasks)Naming.lookup("bot");
-            // Get the task to do
-            Task task = bot.getTask();
+            // Get the reference of the BagOfTasks object loaded in the RMI registry
+            BagOfTasks bot = (BagOfTasks) Naming.lookup("bot");
+            ExecutorService executor = Executors.newCachedThreadPool(); // Create a thread pool
 
-            // If there is a task, run it and remove it from the list of tasks to do
-            if (task != null) {
-                boolean success = task.run();
-                bot.addResult(task, success);
-            } else {
-                System.out.println("La liste des tâches est vide");
+            while (true) {
+                Task task = bot.getTask();
+                if (task != null) {
+                    // Execute the task with a thread from the thread pool
+                    executor.submit(() -> {
+                        boolean success = task.run();
+                        try {
+                            bot.addResult(task, success);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                } else {
+                    System.out.println("La liste des tâches est vide");
+                    break;
+                }
             }
-
-        } catch(Exception e) { // Catch all exceptions
+            // Stop the thread pool
+            executor.shutdown();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 }
+
