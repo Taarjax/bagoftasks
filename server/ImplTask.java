@@ -33,23 +33,34 @@ public class ImplTask implements Serializable, Task {
     public boolean run() {
         boolean success = false;
         try {
-            
-            // DB connection
-            Class.forName("oracle.jdbc.driver.OracleDriver");
-            Connection connection = DatabaseConnection.getConnection();
 
-            // Query
-            PreparedStatement preparedStmt = connection.prepareStatement(this.request);
-            ResultSet rs = preparedStmt.executeQuery();
+            // If the request is a select
+            if (request.trim().toLowerCase().startsWith("select")) {
+                // DB connection
+                Class.forName("oracle.jdbc.driver.OracleDriver");
+                Connection connection = DatabaseConnection.getConnection();
 
-            CachedRowSet crs = RowSetProvider.newFactory().createCachedRowSet();
-            crs.populate(rs);
+                // Query
+                PreparedStatement preparedStmt = connection.prepareStatement(this.request);
+                ResultSet rs = preparedStmt.executeQuery();
 
-            rs.close();
+                CachedRowSet crs = RowSetProvider.newFactory().createCachedRowSet();
+                crs.populate(rs);
+
+                rs.close();
+
+                // Callback the client with the result
+                this.callback.sendResult(new QueryResult(crs));
+            } else { // INSERT, UPDATE, DELETE
+                PreparedStatement preparedStmt = DatabaseConnection.getConnection().prepareStatement(this.request);
+                int result = preparedStmt.executeUpdate();
+
+                // Call back with affected rows
+                this.callback.sendResult(new QueryResult(result));
+
+            }
+
             DatabaseConnection.closeConnection();
-
-            // Callback the client with the result
-            this.callback.sendResult(crs);
             success = true;
         } catch (Exception e) {
             e.printStackTrace();

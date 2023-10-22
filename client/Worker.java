@@ -11,7 +11,18 @@ import java.util.concurrent.Executors;
  * C'est le worker qui fait la tache pas le serveur, ducoup ca permet de pas surchagé le serveur comparé au pattern object factory
  */
 public class Worker {
+    private static int workerId;
+
+
     public static void main(String[] args) {
+        
+        if(args.length > 0 ){
+            workerId = Integer.parseInt(args[0]);
+        } else {
+            workerId = 0;
+        }
+
+
         try {
             // Get the reference of the BagOfTasks object loaded in the RMI registry
             BagOfTasks bot = (BagOfTasks) Naming.lookup("bot");
@@ -25,17 +36,15 @@ public class Worker {
                         boolean success = task.run();
                         try {
                             bot.addResult(task, success);
+                            System.out.println("Worker " + workerId + " a fini sa tache");
                         } catch (RemoteException e) {
                             e.printStackTrace();
                         }
                     });
                 } else {
-                    System.out.println("La liste des tâches est vide");
-                    break;
+                    Thread.sleep(1000);
                 }
             }
-            // Stop the thread pool
-            executor.shutdown();
         } catch (Exception e) {
             e.printStackTrace();
         }

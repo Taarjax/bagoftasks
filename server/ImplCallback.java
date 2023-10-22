@@ -14,18 +14,21 @@ public class ImplCallback extends UnicastRemoteObject implements Callback {
     super();
   }
 
-  public void sendResult(CachedRowSet crs) throws RemoteException {
-    System.out.println("Résultat de la requête : ");
-    try {
-      while (crs.next()) {
-        int id = crs.getInt("id");
-        String solde = crs.getString("solde");
-        System.out.println("id : " + id + ", solde : " + solde);
+  public void sendResult(QueryResult result) throws RemoteException {
+    if (result.isSelectResult()) {
+      try {
+        CachedRowSet crs = result.getResultSet();
+        while (crs.next()) {
+          int id = crs.getInt("id");
+          String solde = crs.getString("solde");
+          System.out.println("id : " + id + ", solde : " + solde);
+        }
+      } catch (SQLException e) {
+        e.printStackTrace();
       }
-    } catch (SQLException e) {
-      e.printStackTrace();
+    } else {
+      System.out.println("Nombre de lignes affectées : " + result.getAffectedRows());
     }
-    
   }
 
 }
