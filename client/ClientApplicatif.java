@@ -46,6 +46,26 @@ public class ClientApplicatif {
         }
     }
 
+    // Pour montrer que le serveur gère l'asynchronisme 
+    //    public static void main(String[] args) { 
+    //         try{
+    //             BagOfTasks bot = (BagOfTasks) Naming.lookup("bot");
+    //             // Instanciate the callback to get the result of the task
+    //             ImplCallback callback = new ImplCallback();
+                
+    //             //Send 10000 tasks
+    //             for (int i = 0; i < 10; i++) {
+    //                 ImplTask task = new ImplTask(i,"Select * from client", callback);
+    //                 bot.submitTask(task);
+    //             }
+                
+    //             // Submit the task to the BagOfTasks
+    //         } catch (Exception e) {
+    //             e.printStackTrace();
+    //         }
+    //    }
+
+
     private static boolean isValidSQL(String query) {
         String lowerCaseQuery = query.trim().toLowerCase();
         return lowerCaseQuery.startsWith("select") || lowerCaseQuery.startsWith("update") || 

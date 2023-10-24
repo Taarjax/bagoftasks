@@ -70,7 +70,7 @@ public class ImplBagOfTasks extends UnicastRemoteObject implements BagOfTasks {
      * he want to submit a task to the server
      */
     public Task submitTask(Task task) throws RemoteException {
-        System.out.println("Tache reçu par le serveur : ");
+        System.out.println("Tache " + task.getId() + " ajoutée");
 
         listTask.add(task);
         return (Task) task;

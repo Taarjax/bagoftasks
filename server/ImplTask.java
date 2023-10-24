@@ -19,10 +19,17 @@ import java.sql.*;
  * Ce sont les workers qui vont faire le travail.
  */
 public class ImplTask implements Serializable, Task {
+    private Integer id;
     private String request = "";
     private Callback callback;
 
-    public ImplTask(String _request, Callback _callback) {
+    public ImplTask( String _request, Callback _callback) {
+        this.request = _request;
+        this.callback = _callback;
+    }
+
+    public ImplTask(Integer _id, String _request, Callback _callback) {
+        this.id = _id;
         this.request = _request;
         this.callback = _callback;
     }
@@ -68,5 +75,9 @@ public class ImplTask implements Serializable, Task {
         }
 
         return success;
+    }
+
+    public Integer getId() {
+        return this.id;
     }
 }
